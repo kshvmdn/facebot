@@ -17,8 +17,9 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
 
     var body = event.body.toLowerCase(); 
 
-    if (body.includes('@facebot ')) {
-      body = body.slice('@facebot '.length);
+    // register phone number or send sms
+    if (body.includes('@smsbot ')) {
+      body = body.slice('@smsbot '.length);
       if (body.includes('register ')) {
         body = body.slice('register '.length).split('`');
         Person.create({name: body[0].trim(), number: body[1]}, function(err, person) {
@@ -55,10 +56,17 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
             });
           });
         });
-      } else if (body.includes('ping')) {
-        api.sendMessage('pong', event.threadID);
       }
     }
+
+    // tweetbot stuff
+    if (body.includes('@tweetbot ')) {
+      body = body.slice('@tweetbot '.length);
+    }
+
+
+
+    // check for incoming sms messages
     twilio.messages.list({}, function(err, data) { 
       data.messages.forEach(function(sms) {
         if ( sms.to == config.twilio.number ) {
@@ -93,6 +101,6 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
           });
         })
       }
-    })
+    });
   });
 });
