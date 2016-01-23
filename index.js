@@ -69,8 +69,8 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         twitterClient.post('statuses/update', {status: body},  function(error, tweet, response){
           if(error) return HandleError(error); 
         });
-      } else if (body.includes('latest status ')) {
-        body = body.slice('latest status '.length); // username
+      } else if (body.includes('latest tweet ')) {
+        body = body.slice('latest tweet '.length); // username
         twitterClient.get('statuses/user_timeline', {screen_name: body}, function(error, tweets, response){
           var tweet = tweets[0]; var i = 0;
           while (tweet.retweeted || tweet['retweeted_status'] != undefined || tweet.text.indexOf('http') != -1) {
@@ -78,6 +78,18 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
             tweet = tweets[i];
           }
           api.sendMessage(tweet.text, event.threadID);
+        });
+      } else if (body.includes('tl')) {
+        twitterClient.get('statuses/home_timeline', {count: 30}, function(error, tweets, response){
+          tweets.forEach(function(tweet) {
+            var count = (tweet.text.match(/http/g) || []).length;
+            var text = tweet.text;
+            for (let i = 0; i < count; i++) {
+              // super hacky way of removing links from text, i apologize
+              text = text.replace(text.slice(text.indexOf('https'), text.indexOf('https') + 24), '').trim()
+            }
+            api.sendMessage(text, event.threadID);
+          });
         });
       }
     }
