@@ -5,7 +5,8 @@ const config = require('./config');
 const login = require('facebook-chat-api');
 const client = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
 
-const FacebotModel = require('./Schema');
+const Person = require('./models/person');
+const Messages = require('./models/messages');
 
 login({email: config.fb.email, password: config.fb.pass}, function callback(err, api) {
   if (err) return console.error(err);
@@ -21,17 +22,23 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       body = body.slice('@facebot '.length);
       if (body.includes('register ')) {
         body = body.slice('register '.length).split('`');
-        new FacebotModel({name: body[0].trim(), number: body[1]}).save();
+
+        Person.create({name: body[0].trim(), number: body[1]}, function(err, person) {
+          if (err) return HandleError(err);
+          else console.log('New user added')
+        });
+
       } else if (body.includes('send ')) {
         body = body.slice('send '.length).split('`');
-        FacebotModel.findOne({ name: body[0].trim() }, function(err, entry) {
+        Person.findOne({name: body[0].trim()}, function(err, person) {
+          if (err) return HandleError(err);
           client.sms.messages.create({
             body: body[1],
-            to: entry.number,
+            to: person.number,
             from: config.twilio.number
-          }, function(err, message) {
-            if (!err) console.log(message.sid);
-            else console.log(err);
+          }, function(err, sms) {
+            if (!err) console.log(sms.sid);
+            else console.dir(err);
           });
         });
       }
@@ -46,6 +53,4 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       }); 
     });
   });
-
-
 });
