@@ -10,5 +10,5 @@ app.get('/', function (req, res) {
 });
 
 app.listen(PORT, function() {
-  console.log('Listening on port ' + PORT);
+  console.log('Listening on port ' + PORT + '...');
 });
