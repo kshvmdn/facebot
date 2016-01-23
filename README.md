@@ -3,12 +3,18 @@ FB Messenger Bot. Built at UofTHacks III (2016).
 
 ## Commands
 
-#### FB SMS (made w. Twilio)
+#### FB, SMS Messaging (made with [Twilio](https://www.twilio.com))
 
 Register each friend with their name/number, then message them between FB Messenger and SMS; responses are loaded *as messages are sent*.
 
-``` @facebot register FRIEND_NAME `PHONE_NUMBER` ```
+``` @smsbot register FRIEND_NAME `PHONE_NUMBER` ```
 
-``` @facebot send FRIEND_NAME `MESSAGE` ``` (__must__ be registered prior to sending messages)
+``` @smsbot send FRIEND_NAME `MESSAGE` ``` (__must__ be registered prior to sending messages)
 
-Note that the backticks are *required*.
+Backticks *required*.
+
+#### Twitter (made with [Twitter API](https://www.npmjs.com/package/twitter))
+
+Post a new Tweet -- `@tweetbot tweet STATUS`
+Get Latest Tweet from any user -- `@tweetbot latest tweet USER_HANDLE`
+Get 30 Tweets from the Home timeline -- `@tweetbot tl`
