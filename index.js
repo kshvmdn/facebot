@@ -28,7 +28,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       } else if (body.includes('send ')) {
         body = body.slice('send '.length).split('`');
         Person.findOne({name: body[0].trim()}, function(err, person) {
-          if (err) return HandleError(err);
+          if (err || person == null) return HandleError(err);
           twilio.sms.messages.create({
             body: body[1],
             to: person.number,
@@ -79,7 +79,8 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
           twilio.messages(sms.sid).get(function(err, sms1) {
             Person.findOne({ number: sms1.from }, function(err, person) {
               if (err) return HandleError(err);
-              api.sendMessage(person.name + ' says ' + sms1.body + ' (' + sms1.date_sent.slice(0, sms1.date_sent.length-5).trim() + ')', event.threadID);
+              var name = person == null ? sms.from : person.name;
+              api.sendMessage(name + ' says ' + sms1.body + ' [' + sms1.date_sent.slice(0, sms1.date_sent.length-5).trim() + ']', event.threadID);
               Messages.findOneAndUpdate(
                   { _id:  sms._id }, 
                   { $set: { shown: true } },
