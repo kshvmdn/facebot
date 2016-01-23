@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 const db = mongoose.createConnection('mongodb://localhost/facebot');
 
-const MessageSchema = new mongoose.Schema({
-  sid: String,
+const ThreadSchema = new mongoose.Schema({
   threadId: Number,
-  shown: Boolean
+  messages: [String]
 },  { strict: false });
 
-module.exports = db.model('messages', MessageSchema);
+module.exports = db.model('threads', ThreadSchema);

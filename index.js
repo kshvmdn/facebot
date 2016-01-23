@@ -7,11 +7,11 @@ const twilio = require('twilio')(config.twilio.accountSid, config.twilio.authTok
 
 const Person = require('./models/person');
 const Messages = require('./models/messages');
+const Threads = require('./models/threads');
 
 login({email: config.fb.email, password: config.fb.pass}, function callback(err, api) {
   if (err) return HandleError(err);
 
-  api.setOptions({listenEvents: true});
   var listen = api.listen(function callback(err, event) {
     if (err) return HandleError(err);
 
@@ -35,7 +35,24 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
             from: config.twilio.number
           }, function(err, sms) {
             if (err) return HandleError(err);
-            console.log(sms.sid);
+            Threads.count({ threadID: event.threadID }, function(err, count) {
+              if ( count == 0 ) {
+                Threads.create({ threadID: event.threadID, messages: [sms.sid] }, function(err, thread) {
+                  if (err) return HandleError(err);
+                  else console.log('New thread added');
+                });
+              } else {
+                Threads.findOneAndUpdate(
+                  { threadID: event.threadID }, 
+                  { $push: { messages: sms.sid } },
+                  { safe: true, upsert: true },
+                  function(err, model) {
+                    if (err) return HandleError(err);
+                    console.log('Added msg to thread');
+                  }
+                )
+              }
+            });
           });
         });
       } else if (body.includes('ping')) {
@@ -47,11 +64,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         if ( sms.to == config.twilio.number ) {
           Messages.count( { sid: sms.sid }, function(err, count) {
             if ( count == 0 ) {
-              Person.findOne({number: sms.from}, function(err, person) {
-                if (err) return HandleError(err);
-                api.sendMessage(person.name + ' says ' + sms.body + ' (' + sms.date_sent.slice(0, sms.date_sent.length-5).trim() + ')', event.threadID);
-              });
-              Messages.create({sid: sms.sid, threadID: event.threadID}, function(err, message) {
+              Messages.create({sid: sms.sid, threadID: event.threadID, shown: false}, function(err, message) {
                 if (err) return HandleError(err);
                 else console.log('Message added')
               });
@@ -60,5 +73,25 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         }
       });
     });
+    Messages.find({ threadID: event.threadID, shown: false }, function(err, messages) {
+      if (messages.length > 0) {
+        messages.forEach(function(sms) {
+          twilio.messages(sms.sid).get(function(err, sms1) {
+            Person.findOne({ number: sms1.from }, function(err, person) {
+              if (err) return HandleError(err);
+              api.sendMessage(person.name + ' says ' + sms1.body + ' (' + sms1.date_sent.slice(0, sms1.date_sent.length-5).trim() + ')', event.threadID);
+              Messages.findOneAndUpdate(
+                  { _id:  sms._id }, 
+                  { $set: { shown: true } },
+                  { safe: true, upsert: true },
+                  function(err, model) {
+                    if (err) return HandleError(err);
+                  }
+                )
+            });
+          });
+        })
+      }
+    })
   });
 });
