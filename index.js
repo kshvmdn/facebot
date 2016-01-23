@@ -6,6 +6,8 @@ const login = require('facebook-chat-api');
 const twilioClient = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
 const Twitter = require('twitter');
 const twitterClient = new Twitter(config.twitter);
+const request = require('request');
+const define = require('define-it').definitions;
 
 const Person = require('./models/person');
 const Messages = require('./models/messages');
@@ -91,6 +93,29 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
             api.sendMessage(text, event.threadID);
           });
         });
+      }
+    }
+
+    else if (body.includes('@bot ')) {
+      body = body.slice('@bot '.length);
+      if (body.includes('tell me a joke')) {
+        let url = 'https://www.reddit.com/r/jokes.json';
+        request(url, function(error, response, body) {
+          var jokes = JSON.parse(body).data.children;
+          var joke = jokes[Math.floor(Math.random() * jokes.length)].data;
+          var q = joke.title;
+          var p = joke.selftext;
+          api.sendMessage(q, event.threadID);
+          setTimeout(function() {
+            api.sendMessage(p + ' 😄', event.threadID);
+          }, 3000);
+        });
+      } else if (body.includes('define ')) {
+        body = body.replace('define ', '');
+        define(body, function(err, res) {
+          var response = (err) ? '\''+ body +'\' not defined 😞' : res[0]
+          api.sendMessage(response, event.threadID)
+        })
       }
     }
 
