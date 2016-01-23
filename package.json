@@ -27,6 +27,7 @@
     "facebook-chat-api": "^1.0.6",
     "mongoose": "^4.3.6",
     "ngrok": "^0.2.2",
-    "twilio": "^2.8.0"
+    "twilio": "^2.8.0",
+    "twitter": "^1.2.5"
   }
 }

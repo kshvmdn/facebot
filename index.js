@@ -3,7 +3,9 @@
 const config = require('./config');
 
 const login = require('facebook-chat-api');
-const twilio = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
+const twilioClient = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
+const Twitter = require('twitter');
+const twitterClient = new Twitter(config.twitter);
 
 const Person = require('./models/person');
 const Messages = require('./models/messages');
@@ -17,7 +19,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
 
     var body = event.body.toLowerCase(); 
 
-    // register phone number or send sms
+    // twilio sms integration
     if (body.includes('@smsbot ')) {
       body = body.slice('@smsbot '.length);
       if (body.includes('register ')) {
@@ -30,7 +32,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         body = body.slice('send '.length).split('`');
         Person.findOne({name: body[0].trim()}, function(err, person) {
           if (err || person == null) return HandleError(err);
-          twilio.sms.messages.create({
+          twilioClient.sms.messages.create({
             body: body[1],
             to: person.number,
             from: config.twilio.number
@@ -59,15 +61,20 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       }
     }
 
-    // tweetbot stuff
-    if (body.includes('@tweetbot ')) {
+    // twitter integration
+    else if (body.includes('@tweetbot ')) {
       body = body.slice('@tweetbot '.length);
+      if (body.includes('tweet ')) {
+      } else if (body.includes('latest status ')) {
+      }
     }
 
+    else if (body.includes('ping')) {
+      api.sendMessage('pong', event.threadID);
+    }
 
-
-    // check for incoming sms messages
-    twilio.messages.list({}, function(err, data) { 
+    // populate collection with newly-received messages
+    twilioClient.messages.list({}, function(err, data) { 
       data.messages.forEach(function(sms) {
         if ( sms.to == config.twilio.number ) {
           Messages.count( { sid: sms.sid }, function(err, count) {
@@ -81,10 +88,12 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         }
       });
     });
+
+    // send previously-unshown msgs to current thread
     Messages.find({ threadID: event.threadID, shown: false }, function(err, messages) {
       if (messages.length > 0) {
         messages.forEach(function(sms) {
-          twilio.messages(sms.sid).get(function(err, sms1) {
+          twilioClient.messages(sms.sid).get(function(err, sms1) {
             Person.findOne({ number: sms1.from }, function(err, person) {
               if (err) return HandleError(err);
               var name = person == null ? sms.from : person.name;
