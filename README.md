@@ -15,7 +15,7 @@ Send text message (friend __must__ be registered prior to sending)
 
 ``` @smsbot send FRIEND_NAME `MESSAGE` ```
 
-#### Twitter (made with the [node](https://www.npmjs.com/package/twitter) [Twitter API](https://dev.twitter.com/rest/public) wrapper)
+#### Twitter (made with [Twitter API](https://dev.twitter.com/rest/public) [[npm library](https://www.npmjs.com/package/twitter)])
 
 Post new Tweet - `@tweetbot tweet TEXT`
 
