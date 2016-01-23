@@ -5,19 +5,17 @@ FB Messenger Bot. Built at UofTHacks III (2016).
 
 #### FB, SMS Messaging (made with [Twilio](https://www.twilio.com))
 
-Register each friend with their name/number, then chat with them through FB Messenger and SMS; responses are loaded *as new FB messages are sent*.
+> Backticks __required__, sms responses load _as new FB messages are sent_.
 
 Register friend
 
 ``` @smsbot register FRIEND_NAME `PHONE_NUMBER` ```
 
-Send text message (__must__ be registered prior to sending message)
+Send text message (friend __must__ be registered prior to sending)
 
 ``` @smsbot send FRIEND_NAME `MESSAGE` ```
 
-Backticks __required__.
-
-#### Twitter (made with [Twitter API](https://www.npmjs.com/package/twitter))
+#### Twitter (made with the [node](https://www.npmjs.com/package/twitter) [Twitter API](https://dev.twitter.com/rest/public) wrapper)
 
 Post new Tweet - `@tweetbot tweet TEXT`
 
