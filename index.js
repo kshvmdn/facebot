@@ -13,32 +13,30 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
   var listen = api.listen(function callback(err, message) {
     if (err) return console.error(err);
 
+    var threadID = message.threadID;
     var body = message.body.toLowerCase(); 
     var sender = message.senderID;
 
     if (body.includes('@facebot ')) {
       body = body.slice('@facebot '.length);
       if (body.includes('register ')) {
-        console.log('register called');
         body = body.slice('register '.length).split('`');
-        var name = body[0].trim();
-        var number = body[1];
-        new FacebotModel({name: name, number: number}).save();
+        new FacebotModel({name: body[0].trim(), number: body[1]}).save();
       } else if (body.includes('send ')) {
-        console.log('send called');
         body = body.slice('send '.length).split('`');
-        var name = body[0].trim();
-        var msg = body[1];
-        FacebotModel.findOne({ name: name }, function(err, foo) {console.log(foo.number)});
+        FacebotModel.findOne({ name: body[0].trim() }, function(err, entry) {
+          client.sms.messages.create({
+            body: body[1],
+            to: entry.number,
+            from: config.twilio.number
+          }, function(err, message) {
+            if (!err) console.log(message.sid);
+            else console.log(err);
+          });
+        });
       }
     }
   });
 
-  // client.messages.create({
-  //     body: "Test",
-  //     to: "2892339850",
-  //     from: config.twilio.number
-  // }, function(err, message) {
-  //     process.stdout.write(message.sid);
-  // });
+
 });
