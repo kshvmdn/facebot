@@ -28,7 +28,9 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         body = body.slice('register '.length).split('`');
         Person.create({name: body[0].trim(), number: body[1]}, function(err, person) {
           if (err) return Error(err);
-          else console.log('New user added')
+
+          api.sendMessage('User \'' + body[0].trim() + '\' added!', event.threadID);
+          console.log('New user added')
         });
       } else if (body.includes('send ')) {
         body = body.slice('send '.length).split('`');
@@ -44,7 +46,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
               if ( count == 0 ) {
                 Threads.create({ threadID: event.threadID, messages: [sms.sid] }, function(err, thread) {
                   if (err) return Error(err);
-                  else console.log('New thread added');
+                  console.log('New thread added');
                 });
               } else {
                 Threads.findOneAndUpdate(
@@ -69,12 +71,13 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       if (body.includes('tweeet ')) {
         body = body.slice('tweet '.length); // tweet
         twitterClient.post('statuses/update', {status: body},  function(error, tweet, response){
-          if(error) return Error(error); 
+          if (error) return Error(error); 
         });
       } else if (body.includes('latest tweet ')) {
         body = body.slice('latest tweet '.length); // username
         twitterClient.get('statuses/user_timeline', {screen_name: body}, function(error, tweets, response){
-          var tweet = tweets[0]; var i = 0;
+          var i = 0;
+          var tweet = tweets[i]; 
           while (tweet.retweeted || tweet['retweeted_status'] != undefined || tweet.text.indexOf('http') != -1) {
             i += 1;
             tweet = tweets[i];
@@ -96,6 +99,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       }
     }
 
+    // rand integrations cuz why not
     else if (body.includes('@bot ')) {
       body = body.slice('@bot '.length);
       if (body.includes('tell me a joke')) {
@@ -131,7 +135,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
             if ( count == 0 ) {
               Messages.create({sid: sms.sid, threadID: event.threadID, shown: false}, function(err, message) {
                 if (err) return Error(err);
-                else console.log('Message added')
+                console.log('Message added')
               });
             }
           });
