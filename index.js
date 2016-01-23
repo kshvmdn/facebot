@@ -65,7 +65,20 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
     else if (body.includes('@tweetbot ')) {
       body = body.slice('@tweetbot '.length);
       if (body.includes('tweet ')) {
+        body = body.slice('tweet '.length); // tweet
+        twitterClient.post('statuses/update', {status: body},  function(error, tweet, response){
+          if(error) return HandleError(error); 
+        });
       } else if (body.includes('latest status ')) {
+        body = body.slice('latest status '.length); // username
+        twitterClient.get('statuses/user_timeline', {screen_name: body}, function(error, tweets, response){
+          var tweet = tweets[0]; var i = 0;
+          while (tweet.retweeted || tweet['retweeted_status'] != undefined || tweet.text.indexOf('http') != -1) {
+            i += 1;
+            tweet = tweets[i];
+          }
+          api.sendMessage(tweet.text, event.threadID);
+        });
       }
     }
 
