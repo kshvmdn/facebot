@@ -44,10 +44,20 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       }
     }
     client.messages.list({}, function(err, data) { 
-      data.messages.forEach(function(message) { 
-        if (message.to == config.twilio.number) {
-          FacebotModel.findOne({ number: message.from }, function(err, entry) {
-            api.sendMessage(entry.name + ' says ' + message.body, threadID);
+      data.messages.forEach(function(sms) {
+        if ( sms.to == config.twilio.number ) {
+
+          Messages.count( { sid: sms.sid }, function(err, count) {
+            if ( count == 0 ) {
+              Person.findOne({number: sms.from}, function(err, person) {
+                if (err) return HandleError(err);
+                api.sendMessage(person.name + ' says ' + sms.body + ' (' + sms.date_sent + ')', threadID);
+              });
+              Messages.create({sid: sms.sid}, function(err, message) {
+                if (err) return HandleError(err);
+                else console.log('Message added')
+              });
+            }
           });
         }
       }); 
