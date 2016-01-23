@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/kshvmdn/facebot-messenger#readme",
   "dependencies": {
+    "express": "^4.13.4",
     "facebook-chat-api": "^1.0.6",
     "mongoose": "^4.3.6",
     "twilio": "^2.8.0"
