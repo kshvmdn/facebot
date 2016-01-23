@@ -3,7 +3,7 @@
 const config = require('./config');
 
 const login = require('facebook-chat-api');
-const client = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
+const twilio = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
 
 const Person = require('./models/person');
 const Messages = require('./models/messages');
@@ -11,12 +11,11 @@ const Messages = require('./models/messages');
 login({email: config.fb.email, password: config.fb.pass}, function callback(err, api) {
   if (err) return HandleError(err);
 
-  var listen = api.listen(function callback(err, message) {
+  api.setOptions({listenEvents: true});
+  var listen = api.listen(function callback(err, event) {
     if (err) return HandleError(err);
 
-    var threadID = message.threadID;
-    var body = message.body.toLowerCase(); 
-    var sender = message.senderID;
+    var body = event.body.toLowerCase(); 
 
     if (body.includes('@facebot ')) {
       body = body.slice('@facebot '.length);
@@ -30,7 +29,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         body = body.slice('send '.length).split('`');
         Person.findOne({name: body[0].trim()}, function(err, person) {
           if (err) return HandleError(err);
-          client.sms.messages.create({
+          twilio.sms.messages.create({
             body: body[1],
             to: person.number,
             from: config.twilio.number
@@ -39,26 +38,27 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
             console.log(sms.sid);
           });
         });
+      } else if (body.includes('ping')) {
+        api.sendMessage('pong', event.threadID);
       }
     }
-    client.messages.list({}, function(err, data) { 
+    twilio.messages.list({}, function(err, data) { 
       data.messages.forEach(function(sms) {
         if ( sms.to == config.twilio.number ) {
           Messages.count( { sid: sms.sid }, function(err, count) {
             if ( count == 0 ) {
               Person.findOne({number: sms.from}, function(err, person) {
                 if (err) return HandleError(err);
-                // TODO: format date
-                api.sendMessage(person.name + ' says ' + sms.body + ' (' + sms.date_sent + ')', threadID);
+                api.sendMessage(person.name + ' says ' + sms.body + ' (' + sms.date_sent.slice(0, sms.date_sent.length-5).trim() + ')', event.threadID);
               });
-              Messages.create({sid: sms.sid}, function(err, message) {
+              Messages.create({sid: sms.sid, threadID: event.threadID}, function(err, message) {
                 if (err) return HandleError(err);
-                console.log('Message added')
+                else console.log('Message added')
               });
             }
           });
         }
-      }); 
+      });
     });
   });
 });
