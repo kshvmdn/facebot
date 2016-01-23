@@ -36,6 +36,15 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         });
       }
     }
+    client.messages.list({}, function(err, data) { 
+      data.messages.forEach(function(message) { 
+        if (message.to == config.twilio.number) {
+          FacebotModel.findOne({ number: message.from }, function(err, entry) {
+            api.sendMessage(entry.name + ' says ' + message.body, threadID);
+          });
+        }
+      }); 
+    });
   });
 
 
