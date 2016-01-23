@@ -7,7 +7,6 @@ const client = require('twilio')(config.twilio.accountSid, config.twilio.authTok
 
 const FacebotModel = require('./Schema');
 
-
 login({email: config.fb.email, password: config.fb.pass}, function callback(err, api) {
   if (err) return console.error(err);
 
@@ -30,6 +29,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         body = body.slice('send '.length).split('`');
         var name = body[0].trim();
         var msg = body[1];
+        FacebotModel.findOne({ name: name }, function(err, foo) {console.log(foo.number)});
       }
     }
   });
