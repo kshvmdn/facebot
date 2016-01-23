@@ -3,9 +3,9 @@ FB Messenger Bot. Built at UofTHacks III (2016).
 
 ## Commands
 
-#### FB Messenger -> SMS Messaging (Twilio)
+#### FB SMS (made w. Twilio)
 
-Register each friend with their name/number, then freely message between FB Messenger and SMS; responses will load automatically.
+Register each friend with their name/number, then freely message between FB Messenger and SMS; responses load automatically.
 
 ``` @facebot register FRIEND_NAME `PHONE_NUMBER` ```
 
