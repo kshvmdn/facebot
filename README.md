@@ -1,5 +1,5 @@
 # Face*bot* Messenger
-Facebook Messenger bot, built at UofTHacks III.
+FB Messenger to SMS. Built at UofTHacks III with Twilio.
 
 #### Commands
 
