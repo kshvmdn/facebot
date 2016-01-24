@@ -34,7 +34,7 @@ Note: Backticks __required__, sms responses load _as new FB messages are sent_.
 + Get latest Tweet from user
 
   ```
-  @tweetbot latest tweet USER_HANDLE
+  @tweetbot latest status USER_HANDLE
   ```
 
 + Get new Tweets from your timeline

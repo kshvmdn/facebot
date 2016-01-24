@@ -75,9 +75,9 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
           if (error) return Error(error); 
           api.sendMessage('Tweet successful!', event.threadID);
         });
-      } else if (body.includes('latest tweet ')) {
-        console.log('Getting latest tweet...')
-        body = body.slice('latest tweet '.length); // username
+      } else if (body.includes('latest status ')) {
+        console.log('Getting latest tweet from user...')
+        body = body.slice('latest status '.length); // username
         twitterClient.get('statuses/user_timeline', {screen_name: body}, function(error, tweets, response){
           var i = 0;
           var tweet = tweets[i]; 
