@@ -131,3 +131,7 @@ Note: Backticks __required__, sms responses load _as new FB messages are sent_.
   ```
   node index.js
   ```
+
+### Contribute
+
+Feel free to open an [issue](https://github.com/kshvmdn/facebot/issues) or make a [pull request](https://github.com/kshvmdn/facebot/pulls), all contributions are welcome!
