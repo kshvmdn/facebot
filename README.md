@@ -26,7 +26,7 @@ Get latest Tweet from user - `@tweetbot latest tweet USER_HANDLE`
 Get up to 30 Tweets from your TL - `@tweetbot tl`
 
 
-#### RandBot (uses [reddit](https://reddit.com) data, [define-it](https://npmjs.org/kshvmdn/define-it) npm library)
+#### RandBot (uses [reddit](https://reddit.com) data, [define-it](https://www.npmjs.com/package/define-it) npm library)
 
 Joke: `@randbot tell me a joke`
 
