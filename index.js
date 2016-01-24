@@ -72,6 +72,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         body = body.slice('tweet '.length); // tweet
         twitterClient.post('statuses/update', {status: body},  function(error, tweet, response){
           if (error) return Error(error); 
+          api.sendMessage('Tweet successful!', event.threadID);
         });
       } else if (body.includes('latest tweet ')) {
         body = body.slice('latest tweet '.length); // username
