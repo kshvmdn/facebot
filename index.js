@@ -76,7 +76,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
           api.sendMessage('Tweet successful!', event.threadID);
         });
       } else if (body.includes('latest status ')) {
-        console.log('Getting latest tweet from user...')
+        console.log('Getting user\'s latest tweet...')
         body = body.slice('latest status '.length); // username
         twitterClient.get('statuses/user_timeline', {screen_name: body}, function(error, tweets, response){
           var i = 0;
@@ -108,7 +108,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       body = body.slice('@bot '.length);
       if (body.includes('tell me a joke')) {
         console.log('Loading joke...');
-        let url = ['https://www.reddit.com/r/jokes.json?count=100', 'https://www.reddit.com/r/cleanjokes.json?count=100', 'https://www.reddit.com/r/dadjokes.json?count=100'];
+        let url = ['https://www.reddit.com/r/jokes.json?count=100', 'https://www.reddit.com/r/cleanjokes.json?count=100'];
         request(url[Math.floor(Math.random() * url.length)], function(error, response, body) {
           var jokes = JSON.parse(body).data.children;
           var joke = jokes[Math.floor(Math.random() * jokes.length)].data;
