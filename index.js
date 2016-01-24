@@ -70,11 +70,13 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       body = body.slice('@tweetbot '.length);
       if (body.includes('tweeet ')) {
         body = body.slice('tweet '.length); // tweet
+        console.log('Posting tweet...')
         twitterClient.post('statuses/update', {status: body},  function(error, tweet, response){
           if (error) return Error(error); 
           api.sendMessage('Tweet successful!', event.threadID);
         });
       } else if (body.includes('latest tweet ')) {
+        console.log('Getting latest tweet...')
         body = body.slice('latest tweet '.length); // username
         twitterClient.get('statuses/user_timeline', {screen_name: body}, function(error, tweets, response){
           var i = 0;
@@ -86,6 +88,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
           api.sendMessage(tweet.text, event.threadID);
         });
       } else if (body.includes('tl')) {
+        console.log('Getting TL tweets...');
         twitterClient.get('statuses/home_timeline', {count: 30}, function(error, tweets, response){
           tweets.forEach(function(tweet) {
             var count = (tweet.text.match(/http/g) || []).length;
@@ -104,6 +107,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
     else if (body.includes('@bot ')) {
       body = body.slice('@bot '.length);
       if (body.includes('tell me a joke')) {
+        console.log('Loading joke...');
         let url = ['https://www.reddit.com/r/jokes.json', 'https://www.reddit.com/r/cleanjokes.json', 'https://www.reddit.com/r/antijokes.json'];
         request(url[Math.floor(Math.random() * url.length)], function(error, response, body) {
           var jokes = JSON.parse(body).data.children;
@@ -116,12 +120,14 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
           }, 3000);
         });
       } else if (body.includes('define ')) {
+        console.log('Loading definition...')
         body = body.replace('define ', '');
         define(body, function(err, res) {
           var response = (err) ? '\''+ body +'\' not defined 😞' : res[0]
           api.sendMessage(response, event.threadID)
         })
       } else if (body.includes('nba') && process.env.LOGNAME == 'kashavmadan') {
+        console.log('Loading scores...');
         exec('python3 main.py --a ', {cwd: '../../Code/projects/nba-scores'}, function(err, stdout, stderr) {
           api.sendMessage(stdout, event.threadID);
         });
