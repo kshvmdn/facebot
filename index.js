@@ -103,8 +103,8 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
     else if (body.includes('@randbot ')) {
       body = body.slice('@randbot '.length);
       if (body.includes('tell me a joke')) {
-        let url = 'https://www.reddit.com/r/jokes.json';
-        request(url, function(error, response, body) {
+        let url = ['https://www.reddit.com/r/jokes.json', 'https://www.reddit.com/r/cleanjokes.json', 'https://www.reddit.com/r/antijokes.json'];
+        request(url[Math.floor(Math.random() * url.length)], function(error, response, body) {
           var jokes = JSON.parse(body).data.children;
           var joke = jokes[Math.floor(Math.random() * jokes.length)].data;
           var q = joke.title;
