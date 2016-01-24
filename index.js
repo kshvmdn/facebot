@@ -68,7 +68,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
     // twitter integration
     else if (body.includes('@tweetbot ')) {
       body = body.slice('@tweetbot '.length);
-      if (body.includes('tweeet ')) {
+      if (body.includes('tweet ')) {
         body = body.slice('tweet '.length); // tweet
         console.log('Posting tweet...')
         twitterClient.post('statuses/update', {status: body},  function(error, tweet, response){
