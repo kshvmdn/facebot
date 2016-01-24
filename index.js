@@ -20,7 +20,6 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
   var listen = api.listen(function callback(err, event) {
     if (err) return Error(err);
     events.push(event); numMsgs++;
-    console.log(events);
     var body = event.body.toLowerCase(); 
 
     // twilio sms integration
@@ -73,6 +72,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       body = body.slice('@tweetbot '.length);
       if (body == 'tweet that') {
         if (numMsgs >= 2) {
+          console.log('Posting tweet...');
           twitterClient.post('statuses/update', {status: events[numMsgs-2].body.toLowerCase()},  function(error, tweet, response){
             if (error) return Error(error); 
             api.sendMessage('Tweet successful!', event.threadID);
@@ -161,7 +161,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       api.sendMessage('pong', event.threadID);
     }
 
-    // populate collection with any new messages
+    // populate db collection with any new messages
     twilioClient.messages.list({}, function(err, data) { 
       data.messages.forEach(function(sms) {
         if ( sms.to == config.twilio.number ) {
