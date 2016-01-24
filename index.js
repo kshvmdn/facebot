@@ -101,8 +101,8 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
     }
 
     // rand integrations cuz why not
-    else if (body.includes('@randbot ')) {
-      body = body.slice('@randbot '.length);
+    else if (body.includes('@bot ')) {
+      body = body.slice('@bot '.length);
       if (body.includes('tell me a joke')) {
         let url = ['https://www.reddit.com/r/jokes.json', 'https://www.reddit.com/r/cleanjokes.json', 'https://www.reddit.com/r/antijokes.json'];
         request(url[Math.floor(Math.random() * url.length)], function(error, response, body) {

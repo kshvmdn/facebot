@@ -43,24 +43,24 @@ Note: Backticks __required__, sms responses load _as new FB messages are sent_.
   @tweetbot tl
   ```
 
-##### RandBot (uses [reddit](https://reddit.com) data, [define-it](https://www.npmjs.com/package/define-it) npm library)
+##### Misc. commands
 
-+ Random joke (from [/r/jokes](https://reddit.com/r/jokes))
-
-  ```
-  @randbot tell me a joke
-  ```
-
-+ Definition
++ Get a random joke (from [/r/jokes](https://reddit.com/r/jokes))
 
   ```
-  @randbot define WORD
+  @bot tell me a joke
   ```
 
-+ NBA Scores
++ Define a word
 
   ```
-  @randbot nba
+  @bot define {WORD}
+  ```
+
++ Get today's NBA Scores
+
+  ```
+  @bot nba
   ``` 
 
 ### Setup
