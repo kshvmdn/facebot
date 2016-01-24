@@ -108,7 +108,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       body = body.slice('@bot '.length);
       if (body.includes('tell me a joke')) {
         console.log('Loading joke...');
-        let url = ['https://www.reddit.com/r/jokes.json', 'https://www.reddit.com/r/cleanjokes.json'];
+        let url = ['https://www.reddit.com/r/jokes.json?count=400', 'https://www.reddit.com/r/cleanjokes.json?count=400', 'https://www.reddit.com/r/dadjokes.json?count=400'];
         request(url[Math.floor(Math.random() * url.length)], function(error, response, body) {
           var jokes = JSON.parse(body).data.children;
           var joke = jokes[Math.floor(Math.random() * jokes.length)].data;
@@ -127,8 +127,8 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
           api.sendMessage(response, event.threadID)
         })
       } else if (body.includes('nba') && process.env.LOGNAME == 'kashavmadan') {
-        console.log('Loading scores...');
-        exec('python3 main.py --a ', {cwd: '../../Code/projects/nba-scores'}, function(err, stdout, stderr) {
+        console.log('Loading last night\'s scores...');
+        exec('python3 main.py --a --d \'y\' ', {cwd: '../../Code/projects/nba-scores'}, function(err, stdout, stderr) {
           api.sendMessage(stdout, event.threadID);
         });
       }
