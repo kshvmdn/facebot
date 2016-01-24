@@ -1,13 +1,13 @@
 'use strict';
 
 const config = require('./config');
-
+const define = require('define-it').definitions;
+const exec = require('child_process').exec;
 const login = require('facebook-chat-api');
+const request = require('request');
 const twilioClient = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
 const Twitter = require('twitter');
 const twitterClient = new Twitter(config.twitter);
-const request = require('request');
-const define = require('define-it').definitions;
 
 const Person = require('./models/person');
 const Messages = require('./models/messages');
@@ -120,6 +120,10 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
           var response = (err) ? '\''+ body +'\' not defined 😞' : res[0]
           api.sendMessage(response, event.threadID)
         })
+      } else if (body.includes('nba') && process.env.LOGNAME == 'kashavmadan') {
+        exec('python3 main.py --a ', {cwd: '../../Code/projects/nba-scores'}, function(err, stdout, stderr) {
+          api.sendMessage(stdout, event.threadID);
+        });
       }
     }
 
@@ -127,7 +131,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       api.sendMessage('pong', event.threadID);
     }
 
-    // populate collection with newly-received messages
+    // populate collection with any new messages
     twilioClient.messages.list({}, function(err, data) { 
       data.messages.forEach(function(sms) {
         if ( sms.to == config.twilio.number ) {
