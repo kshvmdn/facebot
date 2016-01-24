@@ -63,6 +63,12 @@ Note: Backticks __required__, sms responses load _as new FB messages are sent_.
   @bot nba
   ``` 
 
++ Do mathematical/scientific computations
+
+  ```
+  @bot tell me {QUERY}
+  ``` 
+
 ### Setup
 
 + Clone project, install requirements
