@@ -8,6 +8,7 @@ const request = require('request');
 const twilioClient = require('twilio')(config.twilio.accountSid, config.twilio.authToken);
 const Twitter = require('twitter');
 const twitterClient = new Twitter(config.twitter);
+const wolfram = require('wolfram-alpha').createClient(config.wolfram.key);
 
 const Person = require('./models/person');
 const Messages = require('./models/messages');
@@ -130,6 +131,13 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         console.log('Loading last night\'s scores...');
         exec('python3 main.py --a --d \'y\' ', {cwd: '../../Code/projects/nba-scores'}, function(err, stdout, stderr) {
           api.sendMessage(stdout, event.threadID);
+        });
+      } else if (body.includes('wolfram ')) {
+        console.log('Getting wolfram response...')
+        body = body.slice('wolfram '.length);
+        wolfram.query(body, function (err, result) {
+          if (err) return Error(err);
+          console.log('Result: %j', result);
         });
       }
     }

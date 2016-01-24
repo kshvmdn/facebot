@@ -29,6 +29,7 @@
     "mongoose": "^4.3.6",
     "request": "^2.67.0",
     "twilio": "^2.8.0",
-    "twitter": "^1.2.5"
+    "twitter": "^1.2.5",
+    "wolfram-alpha": "^0.3.0"
   }
 }
