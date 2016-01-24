@@ -5,29 +5,39 @@ FB Messenger Bot. Built at UofTHacks III (2016).
 
 #### SMSBot ([Twilio](https://www.twilio.com))
 
-> Use FB Messenger through SMS, __without data__.
+Use FB Messenger through SMS, __without data__.
 
-Register friend
++ Register friend
 
-``` @smsbot register FRIEND_NAME `PHONE_NUMBER` ```
+  ``` @smsbot register FRIEND_NAME `PHONE_NUMBER` ```
 
-Send text message (friend __must__ be registered prior to sending)
++ Send text message (friend __must__ be registered prior to sending)
 
-``` @smsbot send FRIEND_NAME `MESSAGE` ```
+  ``` @smsbot send FRIEND_NAME `MESSAGE` ```
 
 Note: Backticks __required__, sms responses load _as new FB messages are sent_.
 
 #### Tweetbot ([Twitter API](https://dev.twitter.com/rest/public), [npm wrapper](https://www.npmjs.com/package/twitter))
 
-Post new Tweet - `@tweetbot tweet TEXT`
++ Post new Tweet 
 
-Get latest Tweet from user - `@tweetbot latest tweet USER_HANDLE`
+  ```@tweetbot tweet TEXT```
 
-Get new Tweets from your timeline - `@tweetbot tl`
++ Get latest Tweet from user
+
+  ```@tweetbot latest tweet USER_HANDLE```
+
++ Get new Tweets from your timeline
+
+  ```@tweetbot tl```
 
 
 #### RandBot (uses [reddit](https://reddit.com) data, [define-it](https://www.npmjs.com/package/define-it) npm library)
 
-Joke: `@randbot tell me a joke`
++ Random joke (from [/r/jokes](https://reddit.com/r/jokes))
 
-Definition: `@randbot define WORD`
+```@randbot tell me a joke```
+
++ Definition
+
+```@randbot define WORD```
