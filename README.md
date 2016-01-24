@@ -23,7 +23,7 @@ Post new Tweet - `@tweetbot tweet TEXT`
 
 Get latest Tweet from user - `@tweetbot latest tweet USER_HANDLE`
 
-Get up to 30 Tweets from your TL - `@tweetbot tl`
+Get new Tweets from your timeline - `@tweetbot tl`
 
 
 #### RandBot (uses [reddit](https://reddit.com) data, [define-it](https://www.npmjs.com/package/define-it) npm library)
