@@ -16,10 +16,11 @@ const Threads = require('./models/threads');
 
 login({email: config.fb.email, password: config.fb.pass}, function callback(err, api) {
   if (err) return Error(err);
-
+  const events = []; var numMsgs = 0;
   var listen = api.listen(function callback(err, event) {
     if (err) return Error(err);
-
+    events.push(event); numMsgs++;
+    console.log(events);
     var body = event.body.toLowerCase(); 
 
     // twilio sms integration
@@ -43,6 +44,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
             from: config.twilio.number
           }, function(err, sms) {
             if (err) return Error(err);
+            api.sendMessage('Message sent successfully!', event.threadID);
             Threads.count({ threadID: event.threadID }, function(err, count) {
               if ( count == 0 ) {
                 Threads.create({ threadID: event.threadID, messages: [sms.sid] }, function(err, thread) {
@@ -69,7 +71,16 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
     // twitter integration
     else if (body.includes('@tweetbot ')) {
       body = body.slice('@tweetbot '.length);
-      if (body.includes('tweet ')) {
+      if (body == 'tweet that') {
+        if (numMsgs >= 2) {
+          twitterClient.post('statuses/update', {status: events[numMsgs-2].body.toLowerCase()},  function(error, tweet, response){
+            if (error) return Error(error); 
+            api.sendMessage('Tweet successful!', event.threadID);
+          });
+        } else {
+          api.sendMessage('No previous msg!', event.threadID);
+        }
+      } else if (body.includes('tweet ')) {
         body = body.slice('tweet '.length); // tweet
         console.log('Posting tweet...')
         twitterClient.post('statuses/update', {status: body},  function(error, tweet, response){
