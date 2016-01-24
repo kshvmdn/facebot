@@ -5,7 +5,7 @@ Built at UofTHacks III (2016).
 
 ### Commands
 
-#### SMSBot ([Twilio](https://www.twilio.com))
+##### SMSBot ([Twilio](https://www.twilio.com))
 
 Use FB Messenger through SMS, __without data__.
 
@@ -23,12 +23,12 @@ Use FB Messenger through SMS, __without data__.
 
 Note: Backticks __required__, sms responses load _as new FB messages are sent_.
 
-#### Tweetbot ([Twitter API](https://dev.twitter.com/rest/public), [npm wrapper](https://www.npmjs.com/package/twitter))
+##### Tweetbot ([Twitter API](https://dev.twitter.com/rest/public)/[npm wrapper](https://www.npmjs.com/package/twitter))
 
 + Post new Tweet 
 
   ```
-  @tweetbot tweet TEXT
+  @tweetbot tweet MESSAGE
   ```
 
 + Get latest Tweet from user
@@ -43,7 +43,7 @@ Note: Backticks __required__, sms responses load _as new FB messages are sent_.
   @tweetbot tl
   ```
 
-#### RandBot (uses [reddit](https://reddit.com) data, [define-it](https://www.npmjs.com/package/define-it) npm library)
+##### RandBot (uses [reddit](https://reddit.com) data, [define-it](https://www.npmjs.com/package/define-it) npm library)
 
 + Random joke (from [/r/jokes](https://reddit.com/r/jokes))
 
@@ -56,6 +56,12 @@ Note: Backticks __required__, sms responses load _as new FB messages are sent_.
   ```
   @randbot define WORD
   ```
+
++ NBA Scores
+
+  ```
+  @randbot nba
+  ``` 
 
 ### Setup
 
@@ -110,7 +116,7 @@ Note: Backticks __required__, sms responses load _as new FB messages are sent_.
   node server.js
   ```
   
-  Update the messaging request URL on [Twilio](https://www.twilio.com/user/account/messaging/phone-numbers) with the `ngrok` tunnel URL (you'll find it after running the following command).
+  Replace the request URL on [Twilio](https://www.twilio.com/user/account/messaging/phone-numbers) with the `ngrok` tunnel URL (find it by running the following command)
   
   ```
   ngrok http 8080 -host-header="localhost:8080"
