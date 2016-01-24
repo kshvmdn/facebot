@@ -132,12 +132,16 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
         exec('python3 main.py --a --d \'y\' ', {cwd: '../../Code/projects/nba-scores'}, function(err, stdout, stderr) {
           api.sendMessage(stdout, event.threadID);
         });
-      } else if (body.includes('wolfram ')) {
+      } else if (body.includes('tell me ')) {
         console.log('Getting wolfram response...')
-        body = body.slice('wolfram '.length);
-        wolfram.query(body, function (err, result) {
+        body = body.slice('tell me '.length);
+        console.log(body);
+        wolfram.query(body, function (err, results) {
           if (err) return Error(err);
-          console.log('Result: %j', result);
+          if (results == null || results.length == 0) return api.sendMessage('No result 😞', event.threadID);
+          results.forEach(function(result) {
+            if (result.primary) api.sendMessage(result.subpods[0].text, event.threadID);
+          });
         });
       }
     }
