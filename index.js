@@ -108,7 +108,7 @@ login({email: config.fb.email, password: config.fb.pass}, function callback(err,
       body = body.slice('@bot '.length);
       if (body.includes('tell me a joke')) {
         console.log('Loading joke...');
-        let url = ['https://www.reddit.com/r/jokes.json', 'https://www.reddit.com/r/cleanjokes.json', 'https://www.reddit.com/r/antijokes.json'];
+        let url = ['https://www.reddit.com/r/jokes.json', 'https://www.reddit.com/r/cleanjokes.json'];
         request(url[Math.floor(Math.random() * url.length)], function(error, response, body) {
           var jokes = JSON.parse(body).data.children;
           var joke = jokes[Math.floor(Math.random() * jokes.length)].data;
